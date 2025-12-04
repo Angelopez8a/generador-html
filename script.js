@@ -273,7 +273,7 @@ ${listaMin}
       box-shadow:0 5px 6px rgba(0,0,0,0.2);
     ">
     <h3 style="color:#003366; margin-bottom:10px;">
-      ${emojiFinal} Continúa con la siguiente actividad
+      ${emojiFinal} Continúa avanzando con el siguiente reto
     </h3>
 
     <p style="font-size:1.05em; color:#333; line-height:1.6;">
