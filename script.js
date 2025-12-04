@@ -46,20 +46,22 @@ function generarHTML() {
     const pdfN = document.getElementById("pdf_notas").value;
     const linkAct = document.getElementById("link_actividad").value;
     const txtBoton = document.getElementById("texto_boton").value;
-
     const txtFinal = document.getElementById("texto_bloque_final").value;
 
-    // NUEVO: emoji
+    // NUEVO: emoji seleccionado para el bloque final
     const emojiFinal = document.getElementById("emoji_final").value;
+
+    // (opcional) debug rápido en la consola
+    console.log("Emoji final seleccionado:", emojiFinal);
 
     // Minutos
     let listaMin = "";
-    for (let i=1; i<=minutoCount; i++) {
-        let m = document.getElementById("m_"+i).value.trim();
+    for (let i = 1; i <= minutoCount; i++) {
+        let m = document.getElementById("m_" + i).value.trim();
         if (!m) continue;
         let mmss = formatMin(m);
         let sec = toSeconds(mmss);
-        let texto = document.getElementById("t_"+i).value;
+        let texto = document.getElementById("t_" + i).value;
 
         listaMin += `
         <!-- ENLACE A ${mmss} -->
@@ -128,7 +130,7 @@ function generarHTML() {
       background-color: #e9f4ff;
       padding: 15px;
       text-align: center;
-      box-shadow: 0 0 6px rgba(0,0,0,0.5);
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
     ">
 
     <iframe
@@ -152,7 +154,7 @@ function generarHTML() {
       border-radius: 10px;
       background-color: #f5f8ff;
       padding: 18px;
-      box-shadow: 0 0 6px rgba(0,0,0,0.5);
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
     ">
     <summary
       style="
@@ -200,7 +202,7 @@ ${listaMin}
         border-radius: 14px;
         padding: 20px;
         text-align: center;
-        box-shadow: 0 0 6px rgba(0,0,0,0.5);
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
       ">
       <div style="font-size:40px; margin-bottom:10px;">📑</div>
 
@@ -233,7 +235,7 @@ ${listaMin}
         border-radius: 14px;
         padding: 20px;
         text-align: center;
-        box-shadow: 0 0 6px rgba(0,0,0,0.5);
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
       ">
       <div style="font-size:40px; margin-bottom:10px;">📕</div>
 
