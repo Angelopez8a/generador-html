@@ -46,7 +46,11 @@ function generarHTML() {
     const pdfN = document.getElementById("pdf_notas").value;
     const linkAct = document.getElementById("link_actividad").value;
     const txtBoton = document.getElementById("texto_boton").value;
+
     const txtFinal = document.getElementById("texto_bloque_final").value;
+
+    // NUEVO: emoji
+    const emojiFinal = document.getElementById("emoji_final").value;
 
     // Minutos
     let listaMin = "";
@@ -78,7 +82,7 @@ function generarHTML() {
 `;
     }
 
-    // HTML EXACTO DEL BLOQUE (tu plantilla completa)
+    // HTML EXACTO DEL BLOQUE
     const html = `<!-- CONTENEDOR PRINCIPAL -->
 <div lang="es-mx"
   style="
@@ -88,7 +92,7 @@ function generarHTML() {
     margin: 25px auto;
     width: 90%;
     border-radius: 12px;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 6px rgba(0,0,0,0.5);
     text-align: justify;
     position: relative;
   ">
@@ -124,7 +128,7 @@ function generarHTML() {
       background-color: #e9f4ff;
       padding: 15px;
       text-align: center;
-      box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 6px rgba(0,0,0,0.5);
     ">
 
     <iframe
@@ -148,7 +152,7 @@ function generarHTML() {
       border-radius: 10px;
       background-color: #f5f8ff;
       padding: 18px;
-      box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 6px rgba(0,0,0,0.5);
     ">
     <summary
       style="
@@ -189,16 +193,19 @@ ${listaMin}
       gap: 25px;
     ">
 
+    <!-- TARJETA 1: TRANSCRIPCIÓN -->
     <div
       style="
         background-color: #f4f7ff;
         border-radius: 14px;
         padding: 20px;
         text-align: center;
-        box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 6px rgba(0,0,0,0.5);
       ">
       <div style="font-size:40px; margin-bottom:10px;">📑</div>
+
       <h4 style="margin:0; color:#003366;">Transcripción</h4>
+
       <p style="font-size:0.95em; color:#555; margin-top:5px;">
         Archivo PDF con la transcripción completa del video introductorio.
       </p>
@@ -219,16 +226,19 @@ ${listaMin}
       </a>
     </div>
 
+    <!-- TARJETA 2: NOTAS -->
     <div
       style="
         background-color: #f4f7ff;
         border-radius: 14px;
         padding: 20px;
         text-align: center;
-        box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 6px rgba(0,0,0,0.5);
       ">
       <div style="font-size:40px; margin-bottom:10px;">📕</div>
+
       <h4 style="margin:0; color:#003366;">Notas</h4>
+
       <p style="font-size:0.95em; color:#555; margin-top:5px;">
         Resumen y puntos clave de la presentación del curso.
       </p>
@@ -261,7 +271,7 @@ ${listaMin}
       box-shadow:0 5px 6px rgba(0,0,0,0.2);
     ">
     <h3 style="color:#003366; margin-bottom:10px;">
-      🚀 Continúa con la siguiente actividad
+      ${emojiFinal} Continúa con la siguiente actividad
     </h3>
 
     <p style="font-size:1.05em; color:#333; line-height:1.6;">
