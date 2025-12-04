@@ -16,13 +16,7 @@ Incluye soporte para:
 ✔ PDF de notas  
 ✔ Bloque final de actividad  
 ✔ Botón final  
-✔ HTML identado *exactamente* como la plantilla original  
-
----
-
-## 🚀 Vista previa
-
-El proyecto está disponible en GitHub Pages:
+✔ HTML identado *exactamente* como la plantilla original
 
 👉 (Aquí aparecerá tu URL cuando subas el proyecto)
 
