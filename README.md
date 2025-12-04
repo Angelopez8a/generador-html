@@ -1,4 +1,4 @@
-# 📘 Generador de Bloques HTML — Ángel
+# 📘 Generador de Bloques HTML
 
 Herramienta web diseñada para generar **bloques HTML estructurados**, utilizados en:
 
