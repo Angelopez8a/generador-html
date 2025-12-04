@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Generador de Bloques HTML — Ángel</title>
+<title>Generador de Bloques HTML</title>
 <link rel="stylesheet" href="style.css">
 <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
@@ -10,7 +10,7 @@
 <body>
 
 <header>
-    <h1>📘 Generador de Bloques HTML — Ángel</h1>
+    <h1>📘 Generador de Bloques HTML</h1>
 </header>
 
 <main class="container">
@@ -37,6 +37,10 @@
         <label>Link a la actividad</label>
         <input id="link_actividad" type="url">
 
+        <label>Texto del botón final</label>
+        <input id="texto_boton" type="text">
+
+        <!-- SELECTOR DE EMOJI PARA EL BLOQUE FINAL -->
         <label>Elige el emoji del BLOQUE FINAL</label>
         <select id="emoji_final">
             <option value="📝">📝 Cuestionario</option>
@@ -48,9 +52,6 @@
 
         <label>Texto del BLOQUE FINAL PARA CONTINUAR</label>
         <textarea id="texto_bloque_final"></textarea>
-
-        <label>Texto del botón final</label>
-        <input id="texto_boton" type="text">
     </section>
 
     <!-- MINUTOS CLAVE -->
@@ -74,6 +75,7 @@
 
 </main>
 
+<!-- cache-busting con ?v=2 para evitar que cargue el JS viejo -->
 <script src="script.js"></script>
 </body>
 </html>
