@@ -47,6 +47,7 @@ function generarHTML() {
     const linkAct = document.getElementById("link_actividad").value;
     const txtBoton = document.getElementById("texto_boton").value;
     const txtFinal = document.getElementById("texto_bloque_final").value;
+    const txtTituFinal = document.getElementById("texto_titulo_final").value;
 
     // NUEVO: emoji seleccionado para el bloque final
     const emojiFinal = document.getElementById("emoji_final").value;
@@ -273,7 +274,7 @@ ${listaMin}
       box-shadow:0 5px 6px rgba(0,0,0,0.2);
     ">
     <h3 style="color:#003366; margin-bottom:10px;">
-      ${emojiFinal} Continúa avanzando con el siguiente reto
+      ${emojiFinal} ${txtTituFinal}
     </h3>
 
     <p style="font-size:1.05em; color:#333; line-height:1.6;">
