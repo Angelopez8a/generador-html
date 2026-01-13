@@ -1,82 +1,127 @@
 let minutoCount = 0;
 
 function agregarMinuto() {
-    minutoCount++;
-    const cont = document.getElementById("minutos-container");
+  minutoCount++;
+  const cont = document.getElementById("minutos-container");
 
-    cont.innerHTML += `
+  // (Opcional) mejor con insertAdjacentHTML para no reparsear todo el HTML
+  cont.insertAdjacentHTML("beforeend", `
     <div style="padding:10px 0;">
-        <label>Minuto ${minutoCount} (mm:ss o mm)</label>
-        <input type="text" id="m_${minutoCount}" placeholder="Ej: 1:30">
+      <label>Minuto ${minutoCount} (mm:ss o mm)</label>
+      <input type="text" id="m_${minutoCount}" placeholder="Ej: 1:30">
 
-        <label>Texto que acompaña al minuto ${minutoCount}</label>
-        <input type="text" id="t_${minutoCount}" placeholder="Ej: explicación del concepto">
+      <label>Texto que acompaña al minuto ${minutoCount}</label>
+      <input type="text" id="t_${minutoCount}" placeholder="Ej: explicación del concepto">
     </div>
-    `;
+  `);
 }
 
 function embedYT(url) {
-    if (url.includes("watch?v=")) {
-        return "https://www.youtube.com/embed/" + url.split("watch?v=")[1].split("&")[0];
-    }
-    if (url.includes("youtu.be/")) {
-        return "https://www.youtube.com/embed/" + url.split("youtu.be/")[1].split("?")[0];
-    }
-    return url;
+  if (!url) return "";
+  url = url.trim();
+
+  if (url.includes("watch?v=")) {
+    return "https://www.youtube.com/embed/" + url.split("watch?v=")[1].split("&")[0];
+  }
+  if (url.includes("youtu.be/")) {
+    return "https://www.youtube.com/embed/" + url.split("youtu.be/")[1].split("?")[0];
+  }
+  return url;
+}
+
+// Para enlaces de "Minutos clave" conviene link normal de YouTube
+function watchYT(url) {
+  if (!url) return "";
+  url = url.trim();
+
+  if (url.includes("watch?v=")) {
+    return "https://www.youtube.com/watch?v=" + url.split("watch?v=")[1].split("&")[0];
+  }
+  if (url.includes("youtu.be/")) {
+    return "https://www.youtube.com/watch?v=" + url.split("youtu.be/")[1].split("?")[0];
+  }
+  if (url.includes("/embed/")) {
+    return "https://www.youtube.com/watch?v=" + url.split("/embed/")[1].split(/[?&]/)[0];
+  }
+  return url;
 }
 
 function formatMin(m) {
-    if (!m.includes(":")) return m.padStart(2,"0") + ":00";
-    let [mm, ss] = m.split(":");
-    return mm.padStart(2,"0") + ":" + ss.padStart(2,"0");
+  m = (m || "").trim();
+  if (!m) return "";
+
+  // Si solo viene "mm"
+  if (!m.includes(":")) return String(m).padStart(2, "0") + ":00";
+
+  let [mm, ss] = m.split(":");
+  mm = (mm || "0").trim();
+  ss = (ss || "0").trim();
+
+  return String(mm).padStart(2, "0") + ":" + String(ss).padStart(2, "0");
 }
 
 function toSeconds(m) {
-    let [mm, ss] = m.split(":");
-    return parseInt(mm)*60 + parseInt(ss);
+  m = (m || "").trim();
+  if (!m) return 0;
+
+  // Soporta "mm"
+  if (!m.includes(":")) return parseInt(m, 10) * 60;
+
+  let [mm, ss] = m.split(":");
+  mm = parseInt(mm, 10);
+  ss = parseInt(ss, 10);
+
+  mm = Number.isFinite(mm) ? mm : 0;
+  ss = Number.isFinite(ss) ? ss : 0;
+
+  return mm * 60 + ss;
 }
 
 function generarHTML() {
+  // Datos principales
+  const titulo = document.getElementById("titulo_bloque").value;
+  const intro = document.getElementById("intro").value;
 
-    // Datos principales
-    const titulo = document.getElementById("titulo_bloque").value;
-    const intro = document.getElementById("intro").value;
-    const link = embedYT(document.getElementById("link_video").value);
-    const pdfT = document.getElementById("pdf_trans").value;
-    const pdfN = document.getElementById("pdf_notas").value;
-    const linkAct = document.getElementById("link_actividad").value;
-    const txtBoton = document.getElementById("texto_boton").value;
-    const txtFinal = document.getElementById("texto_bloque_final").value;
-    const txtTituFinal = document.getElementById("texto_titulo_final").value;
-    const emojiFinal = document.getElementById("emoji_final").value;
+  const rawVideo = document.getElementById("link_video").value;
+  const linkEmbed = embedYT(rawVideo);
+  const linkWatch = watchYT(rawVideo);
 
-    // Minutos
-    let listaMin = "";
-    for (let i = 1; i <= minutoCount; i++) {
-        let m = document.getElementById("m_" + i).value.trim();
-        if (!m) continue;
-        let mmss = formatMin(m);
-        let sec = toSeconds(mmss);
-        let texto = document.getElementById("t_" + i).value;
+  const pdfT = document.getElementById("pdf_trans").value;
+  const pdfN = document.getElementById("pdf_notas").value;
+  const linkAct = document.getElementById("link_actividad").value;
+  const txtBoton = document.getElementById("texto_boton").value;
+  const txtFinal = document.getElementById("texto_bloque_final").value;
+  const txtTituFinal = document.getElementById("texto_titulo_final").value;
+  const emojiFinal = document.getElementById("emoji_final").value;
 
-        listaMin += `
-        <li>
-          🔹 <strong>Minuto
-            <a
-              style="color:#0056b3; text-decoration:none; font-weight:bold;"
-              href="${link}?start=${sec}"
-              target="_blank"
-              rel="noopener">
-              ${mmss}
-            </a>:
-          </strong>
-          ${texto}
-        </li>
-`;
-    }
+  // Minutos
+  let listaMin = "";
+  for (let i = 1; i <= minutoCount; i++) {
+    let mRaw = document.getElementById("m_" + i).value.trim();
+    if (!mRaw) continue;
 
-    // HTML generado
-    const html = `<!-- CONTENEDOR PRINCIPAL -->
+    let mmss = formatMin(mRaw);
+    let sec = toSeconds(mRaw); // <- aquí usamos el raw para soportar mm o mm:ss
+    let texto = document.getElementById("t_" + i).value;
+
+    listaMin += `
+      <li>
+        🔹 <strong>Minuto
+          <a
+            style="color:#0056b3; text-decoration:none; font-weight:bold;"
+            href="${linkWatch}&t=${sec}s"
+            target="_blank"
+            rel="noopener">
+            ${mmss}
+          </a>:
+        </strong>
+        ${texto}
+      </li>
+    `;
+  }
+
+  // HTML generado (CORREGIDO: solo un cierre </div> al final)
+  const html = `<!-- CONTENEDOR PRINCIPAL -->
 <div lang="es-mx"
   style="font-family: Montserrat, sans-serif; background-color: #e2eaf7; padding: 35px; margin: 25px auto; width: 90%; border-radius: 12px; box-shadow: 0 0 6px rgba(0,0,0,0.5); text-align: justify; position: relative;">
 
@@ -91,14 +136,12 @@ function generarHTML() {
   <p><strong>Haz clic en el siguiente video para comenzar.</strong></p>
 
   <!-- VIDEO 16:9 -->
-  <div
-    style="margin-top: 25px; border-radius: 16px; background-color: #e9f4ff; padding: 15px; text-align: center; box-shadow: 8px 8px 20px #cbd5e1, -8px -8px 20px #ffffff;">
-    <div
-      style="position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; box-shadow: inset 4px 4px 8px #cbd5e1, inset -4px -4px 8px #ffffff;">
+  <div style="margin-top: 25px; border-radius: 16px; background-color: #e9f4ff; padding: 15px; text-align: center; box-shadow: 8px 8px 20px #cbd5e1, -8px -8px 20px #ffffff;">
+    <div style="position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; box-shadow: inset 4px 4px 8px #cbd5e1, inset -4px -4px 8px #ffffff;">
       <iframe
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
         title="Video del curso"
-        src="${link}"
+        src="${linkEmbed}"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen="allowfullscreen">
       </iframe>
@@ -147,16 +190,15 @@ function generarHTML() {
     </a>
   </div>
 
-</div>
-
 </div>`;
-    document.getElementById("codigo").value = html;
-    document.getElementById("resultado").style.display = "block";
+
+  document.getElementById("codigo").value = html;
+  document.getElementById("resultado").style.display = "block";
 }
 
 function copiar() {
-    let t = document.getElementById("codigo");
-    t.select();
-    navigator.clipboard.writeText(t.value);
-    alert("Código copiado ✔");
+  let t = document.getElementById("codigo");
+  t.select();
+  navigator.clipboard.writeText(t.value);
+  alert("Código copiado ✔");
 }
