@@ -150,7 +150,6 @@ function generarHTML() {
 </div>
 
 </div>`;
-
     document.getElementById("codigo").value = html;
     document.getElementById("resultado").style.display = "block";
 }
