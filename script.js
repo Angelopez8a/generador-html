@@ -49,11 +49,8 @@ function generarHTML() {
     const txtFinal = document.getElementById("texto_bloque_final").value;
     const txtTituFinal = document.getElementById("texto_titulo_final").value;
 
-    // NUEVO: emoji seleccionado para el bloque final
+    // Emoji seleccionado para el bloque final
     const emojiFinal = document.getElementById("emoji_final").value;
-
-    // (opcional) debug rápido en la consola
-    console.log("Emoji final seleccionado:", emojiFinal);
 
     // Minutos
     let listaMin = "";
@@ -134,19 +131,34 @@ function generarHTML() {
       box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
     ">
 
-    <iframe
+    <!-- ✅ VISOR 16:9 RESPONSIVO (CORRECCIÓN ÚNICA) -->
+    <div
       style="
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%;
         border-radius: 12px;
+        overflow: hidden;
         box-shadow:
           inset 4px 4px 8px #cbd5e1,
           inset -4px -4px 8px #ffffff;
-      "
-      src="${link}"
-      width="100%"
-      height="260"
-      frameborder="0"
-      allowfullscreen>
-    </iframe>
+      ">
+
+      <iframe
+        src="${link}"
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border: 0;
+        "
+        frameborder="0"
+        allowfullscreen>
+      </iframe>
+
+    </div>
   </div>
 
   <details
