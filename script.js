@@ -147,6 +147,8 @@ function generarHTML() {
     </a>
   </div>
 
+</div>
+
 </div>`;
 
     document.getElementById("codigo").value = html;
