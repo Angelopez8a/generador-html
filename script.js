@@ -131,36 +131,19 @@ function generarHTML() {
       box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
     ">
 
-    <!-- ✅ VISOR 16:9 RESPONSIVO (CORRECCIÓN ÚNICA) -->
+    <!-- VIDEO 16:9 -->
+  <div
+    style="margin-top: 25px; border-radius: 16px; background-color: #e9f4ff; padding: 15px; text-align: center; box-shadow: 8px 8px 20px #cbd5e1, -8px -8px 20px #ffffff;">
     <div
-      style="
-        position: relative;
-        width: 100%;
-        padding-top: 56.25%;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow:
-          inset 4px 4px 8px #cbd5e1,
-          inset -4px -4px 8px #ffffff;
-      ">
-
+      style="position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; box-shadow: inset 4px 4px 8px #cbd5e1,inset -4px -4px 8px #ffffff;">
       <iframe
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
         src="${link}"
-        style="
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          border: 0;
-        "
-        frameborder="0"
-        allowfullscreen>
-      </iframe>
-
-    </div>
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen="allowfullscreen">
+      </iframe></div>
   </div>
-
+  
   <details
     style="
       margin-top: 30px;
