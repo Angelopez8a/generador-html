@@ -1,84 +1,139 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Generador de Bloques HTML</title>
-<link rel="stylesheet" href="style.css">
-<link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Generador de Bloques HTML</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 </head>
 
 <body>
-
-<header>
-    <h1>📘 Generador de Bloques HTML</h1>
+<header class="topbar">
+    <div class="topbar-inner">
+        <h1>📘 Generador de Bloques HTML</h1>
+        <p class="topbar-sub">Video (sin embed) + minutos clave con LaTeX + transcripción + recurso del profesor opcional.</p>
+    </div>
 </header>
 
 <main class="container">
-
-    <!-- DATOS GENERALES -->
     <section class="card">
         <h2 class="section-title">Datos generales</h2>
 
-        <label>Título del bloque</label>
-        <input id="titulo_bloque" type="text">
+        <div class="grid-2">
+            <div class="field">
+                <label for="titulo_bloque">Título del bloque</label>
+                <input id="titulo_bloque" type="text" placeholder="Ej: U1V03 — Funciones no negativas" />
+            </div>
 
-        <label>Párrafo de introducción</label>
-        <textarea id="intro"></textarea>
+            <div class="field">
+                <label for="link_video">Link del video de YouTube</label>
+                <input id="link_video" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+            </div>
+        </div>
 
-        <label>Link del video de YouTube</label>
-        <input id="link_video" type="url">
+        <div class="field">
+            <label for="intro">Párrafo de introducción</label>
+            <textarea id="intro" rows="4" placeholder="Escribe un texto breve..."></textarea>
+        </div>
 
-        <label>Link al PDF Transcripción</label>
-        <input id="pdf_trans" type="url">
+        <div class="divider"></div>
 
-        <label>Link al PDF Notas</label>
-        <input id="pdf_notas" type="url">
+        <h3 class="sub-title">Transcripción (siempre)</h3>
 
-        <label>Link a la actividad</label>
-        <input id="link_actividad" type="url">
+        <div class="field">
+            <label for="pdf_trans">Link al PDF Transcripción</label>
+            <input id="pdf_trans" type="url" placeholder="https://..." />
+        </div>
 
-        <label>Texto del titulo de la actividad</label>
-        <textarea id="texto_titulo_final"></textarea>
+        <div class="divider"></div>
 
-        <label>Texto del bloque del recurso</label>
-        <textarea id="texto_bloque_final"></textarea>
+        <h3 class="sub-title">Recurso del profesor (opcional)</h3>
 
-        <label>Elige el emoji del bloque de actvidad</label>
-        <select id="emoji_final">
-            <option value="📝">📝 Cuestionario</option>
-            <option value="🧩">🧩 Actividades</option>
-            <option value="🎮">🎮 Juego</option>
-            <option value="🗣️">🗣️ Foro</option>
-            <option value="✍️">✍️ Examen Parcial</option>
-            <option value="💻">💻 Sesión sincrónica</option>
-        </select>
-        
-        <label>Texto del botón del recurso</label>
-        <input id="texto_boton" type="text">
+        <div class="grid-2">
+            <div class="field">
+                <label for="prof_titulo">Título del recurso</label>
+                <input id="prof_titulo" type="text" placeholder="Ej: Lectura complementaria" />
+            </div>
+
+            <div class="field">
+                <label for="prof_link">Link del recurso</label>
+                <input id="prof_link" type="url" placeholder="https://..." />
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="prof_desc">Descripción breve</label>
+            <textarea id="prof_desc" rows="3" placeholder="Ej: Material para reforzar lo visto en el video..."></textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 class="sub-title">Bloque final (actividad / recurso)</h3>
+
+        <div class="grid-2">
+            <div class="field">
+                <label for="link_actividad">Link a la actividad</label>
+                <input id="link_actividad" type="url" placeholder="https://..." />
+            </div>
+
+            <div class="field">
+                <label for="texto_boton">Texto del botón</label>
+                <input id="texto_boton" type="text" placeholder="Ir a la actividad" />
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="field">
+                <label for="emoji_final">Emoji del bloque</label>
+                <select id="emoji_final">
+                    <option value="📝">📝 Cuestionario</option>
+                    <option value="🧩">🧩 Actividades</option>
+                    <option value="🎮">🎮 Juego</option>
+                    <option value="🗣️">🗣️ Foro</option>
+                    <option value="✍️">✍️ Examen Parcial</option>
+                    <option value="💻">💻 Sesión sincrónica</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="texto_titulo_final">Título del bloque final</label>
+                <input id="texto_titulo_final" type="text" placeholder="Ej: Actividad de práctica" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="texto_bloque_final">Texto del bloque final</label>
+            <textarea id="texto_bloque_final" rows="4" placeholder="Describe qué hará el estudiante..."></textarea>
+        </div>
     </section>
 
-    <!-- MINUTOS CLAVE -->
     <section class="card">
-        <h2 class="section-title">🕐 Minutos clave</h2>
+        <div class="section-head">
+            <h2 class="section-title">🕐 Minutos clave</h2>
+            <button class="btn" id="btnAddMin" type="button">➕ Agregar minuto</button>
+        </div>
 
-        <button class="boton" onclick="agregarMinuto()">➕ Agregar minuto</button>
+        <div id="minutos-container" class="minutos"></div>
 
-        <div id="minutos-container"></div>
+        <div class="help">
+            Puedes escribir LaTeX en la explicación. Ej: <code>\(\int_0^1 x^2\,dx\)</code> o <code>$$\sum_{n=1}^\infty \frac1{n^2}$$</code>
+        </div>
     </section>
 
-    <button class="boton generar" onclick="generarHTML()">✨ Generar HTML</button>
+    <button class="btn btn-primary btn-big" id="btnGenerar" type="button">✨ Generar HTML</button>
 
-    <!-- RESULTADO -->
     <section id="resultado" class="card" style="display:none;">
-        <h2 class="section-title">Resultado generado</h2>
+        <div class="section-head">
+            <h2 class="section-title">Resultado generado</h2>
+            <button class="btn btn-success" id="btnCopiar" type="button">📋 Copiar</button>
+        </div>
 
-        <textarea id="codigo"></textarea>
-        <button class="boton copiar" onclick="copiar()">📋 Copiar al portapapeles</button>
+        <textarea id="codigo" spellcheck="false"></textarea>
+        <p class="help">El bloque generado no incluye embed del video; solo botón/enlace. Minutos clave soportan LaTeX con MathJax.</p>
     </section>
-
 </main>
 
-<!-- cache-busting con ?v=2 para evitar que cargue el JS viejo -->
 <script src="script.js"></script>
 </body>
 </html>
