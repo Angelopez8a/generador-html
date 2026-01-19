@@ -41,14 +41,31 @@ function cleanURL(u) {
   return v || "";
 }
 
-function watchYT(url) {
+/** Convierte cualquier URL común de YouTube a URL embed */
+function ytEmbed(url) {
   const u = cleanURL(url);
   if (!u) return "";
 
-  if (u.includes("watch?v=")) return "https://www.youtube.com/watch?v=" + u.split("watch?v=")[1].split("&")[0];
-  if (u.includes("youtu.be/")) return "https://www.youtube.com/watch?v=" + u.split("youtu.be/")[1].split("?")[0];
-  if (u.includes("/embed/")) return "https://www.youtube.com/watch?v=" + u.split("/embed/")[1].split(/[?&]/)[0];
-  return u;
+  if (u.includes("watch?v=")) {
+    const id = u.split("watch?v=")[1].split("&")[0];
+    return `https://www.youtube.com/embed/${id}`;
+  }
+  if (u.includes("youtu.be/")) {
+    const id = u.split("youtu.be/")[1].split("?")[0];
+    return `https://www.youtube.com/embed/${id}`;
+  }
+  if (u.includes("/embed/")) {
+    const id = u.split("/embed/")[1].split(/[?&]/)[0];
+    return `https://www.youtube.com/embed/${id}`;
+  }
+  return u; // si ya viene embed (o algo equivalente)
+}
+
+function embedStartLink(embedUrl, seconds) {
+  const e = cleanURL(embedUrl);
+  if (!e) return "";
+  const s = Math.max(0, Number(seconds) || 0);
+  return `${e}?start=${s}`;
 }
 
 function formatMin(m) {
@@ -118,7 +135,6 @@ function removeMinRow(rowId) {
   const node = document.getElementById(rowId);
   if (node) node.remove();
 }
-// Para que el onclick siempre encuentre la función:
 window.removeMinRow = removeMinRow;
 
 function wrapBlock(inner) {
@@ -138,10 +154,8 @@ function resourceCard({ icon, title, desc, href, btnText, accent, showWhenNoLink
   const d = escapeHTML(desc || "");
   const b = escapeHTML(btnText || "Abrir");
 
-  // Caso normal: no hay link y no queremos mostrar nada
   if (!safeHref && !showWhenNoLink) return "";
 
-  // Caso “siempre”: no hay link pero mostramos aviso
   if (!safeHref && showWhenNoLink) {
     return `<div style="background-color:#f4f7ff;border-radius:14px;padding:20px;text-align:center;box-shadow:0 0 10px rgba(0,0,0,0.18);border:1px solid rgba(0,0,0,0.06);">
       <div style="font-size:42px;line-height:1;">${icon}</div>
@@ -153,7 +167,6 @@ function resourceCard({ icon, title, desc, href, btnText, accent, showWhenNoLink
     </div>`;
   }
 
-  // Caso con link
   return `<div style="background-color:#f4f7ff;border-radius:14px;padding:20px;text-align:center;box-shadow:0 0 10px rgba(0,0,0,0.18);border:1px solid rgba(0,0,0,0.06);">
     <div style="font-size:42px;line-height:1;">${icon}</div>
     <h4 style="color:#003366;margin:10px 0 6px;font-size:1.12em;">${t}</h4>
@@ -195,21 +208,25 @@ function generarHTML() {
   const titulo = escapeHTML(el.titulo.value);
   const intro = escapeHTML(el.intro.value);
 
-  const linkWatch = watchYT(el.video.value);
+  // Formato EXACTO solicitado: iframe embed
+  const linkEmbed = ytEmbed(el.video.value);
 
   // Transcripción (siempre visible)
   const pdfT = cleanURL(el.pdfTrans.value);
 
+  // Recurso profesor (opcional)
   const profTitle = escapeHTML(el.profTitulo.value || "Recurso del profesor");
   const profLink = cleanURL(el.profLink.value);
   const profDesc = escapeHTML(el.profDesc.value || "");
 
+  // Bloque final
   const linkAct = cleanURL(el.linkAct.value);
   const txtBoton = escapeHTML(el.txtBoton.value || "Abrir");
   const txtFinal = escapeHTML(el.txtFinal.value || "");
   const txtTitFinal = escapeHTML(el.txtTitFinal.value || "");
   const emojiFinal = escapeHTML(el.emojiFinal.value || "📝");
 
+  // Minutos
   const rows = Array.from(document.querySelectorAll(".min-row"));
   const minutes = [];
 
@@ -236,63 +253,61 @@ function generarHTML() {
     </p>
   `;
 
-  const videoBlock = linkWatch
-    ? `<div style="margin-top:18px;padding:16px;border-radius:14px;background:#e9f4ff;border:1px solid rgba(0,0,0,0.06);box-shadow:0 0 10px rgba(0,0,0,0.14);">
-        <div style="display:flex;gap:12px;align-items:flex-start;">
-          <div style="font-size:34px;line-height:1;">🎥</div>
-          <div style="flex:1;">
-            <p style="margin:0 0 8px;color:#223;line-height:1.6;">
-              <strong>Video del curso:</strong> abre el enlace para ver el contenido.
-            </p>
-            <a href="${linkWatch}" target="_blank" rel="noopener"
-              style="display:inline-block;padding:10px 16px;background:#0a4aa6;color:white;text-decoration:none;font-weight:900;border-radius:12px;">
-              Ver video en YouTube
-            </a>
-          </div>
-        </div>
-      </div>`
+  // ===== VIDEO (EXACTO) =====
+  const videoBlock = linkEmbed
+    ? `<!-- CONTENEDOR DEL VIDEO -->
+  <div
+    style="margin-top: 25px; border-radius: 16px; background-color: #e9f4ff; padding: 15px; text-align: center; box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);">
+    <iframe
+      style="border-radius: 12px; box-shadow: inset 4px 4px 8px #cbd5e1,          inset -4px -4px 8px #ffffff;"
+      src="${linkEmbed}" width="100%" height="260"
+      frameborder="0" allowfullscreen="allowfullscreen">
+    </iframe></div>`
     : `<div style="margin-top:18px;padding:14px;background:#fff3cd;border-radius:12px;border:1px solid rgba(0,0,0,0.08);">
         <strong>⚠️ No se detectó un link de YouTube válido.</strong>
       </div>`;
 
-  const minutosBlock = minutes.length
-    ? `<details style="margin-top:26px;border-radius:14px;background-color:#f5f8ff;padding:18px;box-shadow:0 0 10px rgba(0,0,0,0.18);border:1px solid rgba(0,0,0,0.06);">
-        <summary style="cursor:pointer;font-weight:900;color:#004a99;font-size:1.12em;">🕐 Minutos clave</summary>
-        <div style="margin-top:15px;font-size:1.02em;color:#333;">
-          <p style="margin:0 0 12px;">Accede rápidamente a los momentos clave del video:</p>
-          <ul style="list-style:none;padding-left:0;margin:0;">
-            ${minutes.map((it) => {
-              const href = linkWatch ? `${linkWatch}&t=${it.sec}s` : "";
-              const linkPart = href
-                ? `<a style="color:#0a4aa6;text-decoration:none;font-weight:900;" href="${href}" target="_blank" rel="noopener">${it.mmss}</a>`
-                : `<span style="font-weight:900;color:#0a4aa6;">${it.mmss}</span>`;
+  // ===== MINUTOS CLAVE (EXACTO) =====
+  const minutosBlock = minutes.length && linkEmbed
+    ? `<details
+    style="margin-top: 30px; border-radius: 10px; background-color: #f5f8ff; padding: 18px; box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);">
+    <summary
+      style="cursor: pointer; font-weight: bold; color: #004a99; font-size: 1.1em;">
+      🕐 Minutos claves</summary>
+    <div style="margin-top: 15px; font-size: 1.05em; color: #333;">
+      <p>Accede rápidamente a los momentos clave del video:</p>
+      <ul style="list-style-type: none; padding-left: 10px; line-height: 1.8;">
+        ${minutes.map((it) => {
+          const href = embedStartLink(linkEmbed, it.sec);
+          return `<!-- ENLACE A ${it.mmss} -->
+        <li>🔹 <strong>Minuto <a
+              style="color: #0056b3; text-decoration: none; font-weight: bold;"
+              href="${href}"
+              target="_blank" rel="noopener"> ${it.mmss} </a>: </strong> <span class="mjx">${it.texto}</span></li>`;
+        }).join("")}
+      </ul>
+    </div>
+  </details>`
+    : (minutes.length && !linkEmbed)
+      ? `<div style="margin-top:18px;padding:14px;background:#fff3cd;border-radius:12px;border:1px solid rgba(0,0,0,0.08);">
+          <strong>⚠️ Hay minutos clave, pero falta un link de YouTube válido para generar enlaces.</strong>
+        </div>`
+      : "";
 
-              return `<li style="padding:10px 12px;border-radius:12px;background:#ffffff;box-shadow:0 0 8px rgba(0,0,0,0.12);margin:10px 0;border:1px solid rgba(0,0,0,0.06);">
-                <div style="font-size:1.02em;color:#223;">
-                  🔹 <strong>Minuto ${linkPart}:</strong> <span class="mjx">${it.texto}</span>
-                </div>
-              </li>`;
-            }).join("")}
-          </ul>
-        </div>
-      </details>`
-    : "";
-
-  // Transcripción SIEMPRE (con o sin link)
+  // ===== TRANSCRIPCIÓN (SIEMPRE) =====
   const transcripcionCard = resourceCard({
     icon: "📑",
     title: "Transcripción",
-    desc: pdfT ? "Archivo PDF con la transcripción." : "Enlace no proporcionado. Este apartado se mantiene visible según el esquema del bloque.",
+    desc: pdfT
+      ? "Archivo PDF con la transcripción."
+      : "Enlace no proporcionado. Este apartado se mantiene visible según el esquema del bloque.",
     href: pdfT,
     btnText: "Abrir transcripción",
     accent: "#0a4aa6",
     showWhenNoLink: true,
   });
 
-  // Si no hay recurso del profesor, centramos visualmente la transcripción
-  const transcripcionWrapStyle = profLink
-    ? ""
-    : `style="max-width:620px;margin:0 auto;"`;
+  const transcripcionWrapStyle = profLink ? "" : `style="max-width:620px;margin:0 auto;"`;
 
   const transcripcionBlock = `<div style="margin-top:26px;">
       ${sectionTitle("📑", "Transcripción")}
@@ -301,6 +316,7 @@ function generarHTML() {
       </div>
     </div>`;
 
+  // ===== RECURSO PROFESOR (OPCIONAL) =====
   const profBlock = profLink
     ? `<div style="margin-top:18px;">
         ${sectionTitle("🧠", profTitle)}
@@ -315,6 +331,7 @@ function generarHTML() {
       </div>`
     : "";
 
+  // ===== BLOQUE FINAL (OPCIONAL) =====
   const actividadBlock = linkAct
     ? `<div style="background:#cfe2ff;padding:20px;border-radius:14px;margin-top:26px;border-left:7px solid #0a4aa6;box-shadow:0 0 10px rgba(0,0,0,0.16);">
         <h3 style="color:#003366;margin:0 0 10px;">${emojiFinal} ${txtTitFinal}</h3>
