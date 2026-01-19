@@ -152,7 +152,7 @@ window.MathJax=window.MathJax||{tex:{inlineMath:[['\\\\(','\\\\)'],['$','$']],di
 /** Tarjeta EXACTA del estilo que pegaste (Transcripción / Notas / Recurso) */
 function cardExacta({ emoji, titulo, desc, href, colorBoton, textoBoton = "Descargar" }) {
   const link = cleanURL(href);
-  if (!link) return ""; 
+  if (!link) return "";
 
   const t = escapeHTML(titulo);
   const d = escapeHTML(desc);
@@ -171,9 +171,11 @@ function cardTranscripcionSiempre({ href }) {
   const link = cleanURL(href);
 
   if (!link) {
+    // ✅ Ajuste: aquí solo mostramos UNA vez “Transcripción” (en el título),
+    // y el icono se mantiene (no vuelve a repetirse en otro lugar).
     return `<div
       style="background-color: #f4f7ff; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 8px 8px 18px #c9d3e4, -8px -8px 18px #ffffff;">
-      <div style="font-size: 40px; margin-bottom: 10px;"></div>
+      <div style="font-size: 40px; margin-bottom: 10px;">📄</div>
       <h4 style="margin: 0; color: #003366;">Transcripción</h4>
       <p style="font-size: 0.95em; color: #555; margin-top: 5px;">Archivo PDF con la transcripción completa del video.</p>
       <div style="display: inline-block; margin-top: 12px; padding: 10px 18px; background-color: rgba(0,86,179,.18); color: #003366; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.95em;">
@@ -182,8 +184,11 @@ function cardTranscripcionSiempre({ href }) {
     </div>`;
   }
 
+  // ✅ Ajuste clave: faltaba "titulo" en el caso con link, por eso se duplicaba raro
+  // (por ejemplo si el HTML/preview intentaba “rellenar” y se veía dos veces).
   return cardExacta({
     emoji: "📄",
+    titulo: "Transcripción",
     desc: "Archivo PDF con la transcripción completa del video.",
     href: link,
     colorBoton: "#0056b3",
@@ -197,7 +202,7 @@ function generarHTML() {
   const introRaw = String(el.intro.value ?? "").trim();
   const introPars = introRaw
     ? introRaw
-        .split(/\n\s*\n+/) 
+        .split(/\n\s*\n+/)
         .map((p) => p.trim())
         .filter(Boolean)
     : [];
@@ -284,7 +289,7 @@ function generarHTML() {
 
   const cardTrans = cardTranscripcionSiempre({ href: transLink });
 
-  const profEmoji = /nota/i.test(profTitle) ? "📝" : "📝"; // en tu ejemplo es 📝
+  const profEmoji = /nota/i.test(profTitle) ? "📝" : "📝";
   const cardProf = profLink
     ? cardExacta({
         emoji: profEmoji,
