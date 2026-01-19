@@ -12,7 +12,7 @@
   <header class="topbar">
     <div class="topbar-inner">
       <h1>📘 Generador de Bloques HTML</h1>
-      <p class="topbar-sub">Video (sin embed) + minutos clave con LaTeX + transcripción + recurso del profesor opcional.</p>
+      <p class="topbar-sub">Video + minutos clave con LaTeX + transcripción + notas opcionales + actividad y recursos extra.</p>
     </div>
   </header>
 
@@ -40,7 +40,6 @@
       <div class="divider"></div>
 
       <h3 class="sub-title">Transcripción (siempre)</h3>
-
       <div class="field">
         <label for="pdf_trans">Link al PDF Transcripción</label>
         <input id="pdf_trans" type="url" placeholder="https://..." />
@@ -48,44 +47,44 @@
 
       <div class="divider"></div>
 
-      <h3 class="sub-title">Recurso del profesor (opcional)</h3>
+      <h3 class="sub-title">Notas (opcional)</h3>
 
       <div class="grid-2">
         <div class="field">
-          <label for="prof_titulo">Título del recurso</label>
-          <input id="prof_titulo" type="text" placeholder="Ej: Lectura complementaria" />
+          <label for="notas_titulo">Título de las notas</label>
+          <input id="notas_titulo" type="text" placeholder="Ej: Notas del video" />
         </div>
 
         <div class="field">
-          <label for="prof_link">Link del recurso</label>
-          <input id="prof_link" type="url" placeholder="https://..." />
+          <label for="notas_link">Link de las notas</label>
+          <input id="notas_link" type="url" placeholder="https://..." />
         </div>
       </div>
 
       <div class="field">
-        <label for="prof_desc">Descripción breve</label>
-        <textarea id="prof_desc" rows="3" placeholder="Ej: Material para reforzar lo visto en el video..."></textarea>
+        <label for="notas_desc">Descripción breve</label>
+        <textarea id="notas_desc" rows="3" placeholder="Ej: Resumen, ejercicios y puntos clave..."></textarea>
       </div>
 
       <div class="divider"></div>
 
-      <h3 class="sub-title">Bloque final (actividad / recurso)</h3>
+      <h3 class="sub-title">Bloque final: Actividad (opcional) + recursos extra (máx. 3)</h3>
 
       <div class="grid-2">
         <div class="field">
-          <label for="link_actividad">Link a la actividad</label>
+          <label for="link_actividad">Link a la actividad (opcional)</label>
           <input id="link_actividad" type="url" placeholder="https://..." />
         </div>
 
         <div class="field">
-          <label for="texto_boton">Texto del botón</label>
+          <label for="texto_boton">Texto del botón (actividad)</label>
           <input id="texto_boton" type="text" placeholder="Ir a la actividad" />
         </div>
       </div>
 
       <div class="grid-2">
         <div class="field">
-          <label for="emoji_final">Emoji del bloque</label>
+          <label for="emoji_final">Emoji del bloque (actividad)</label>
           <select id="emoji_final">
             <option value="📝">📝 Cuestionario</option>
             <option value="🧩">🧩 Actividades</option>
@@ -97,14 +96,70 @@
         </div>
 
         <div class="field">
-          <label for="texto_titulo_final">Título del bloque final</label>
+          <label for="texto_titulo_final">Título (actividad)</label>
           <input id="texto_titulo_final" type="text" placeholder="Ej: Actividad de práctica" />
         </div>
       </div>
 
       <div class="field">
-        <label for="texto_bloque_final">Texto del bloque final</label>
+        <label for="texto_bloque_final">Descripción (actividad)</label>
         <textarea id="texto_bloque_final" rows="4" placeholder="Describe qué hará el estudiante..."></textarea>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 class="sub-title">Recursos extra (opcionales, no calificables)</h3>
+
+      <!-- Recurso 1 -->
+      <div class="grid-2">
+        <div class="field">
+          <label for="rec1_titulo">Recurso 1 — Título</label>
+          <input id="rec1_titulo" type="text" placeholder="Ej: Lectura complementaria" />
+        </div>
+        <div class="field">
+          <label for="rec1_link">Recurso 1 — Link</label>
+          <input id="rec1_link" type="url" placeholder="https://..." />
+        </div>
+      </div>
+      <div class="field">
+        <label for="rec1_desc">Recurso 1 — Descripción</label>
+        <textarea id="rec1_desc" rows="2" placeholder="Ej: Material extra para profundizar..."></textarea>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Recurso 2 -->
+      <div class="grid-2">
+        <div class="field">
+          <label for="rec2_titulo">Recurso 2 — Título</label>
+          <input id="rec2_titulo" type="text" placeholder="Ej: Video adicional" />
+        </div>
+        <div class="field">
+          <label for="rec2_link">Recurso 2 — Link</label>
+          <input id="rec2_link" type="url" placeholder="https://..." />
+        </div>
+      </div>
+      <div class="field">
+        <label for="rec2_desc">Recurso 2 — Descripción</label>
+        <textarea id="rec2_desc" rows="2" placeholder="Ej: Explicación alternativa..."></textarea>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Recurso 3 -->
+      <div class="grid-2">
+        <div class="field">
+          <label for="rec3_titulo">Recurso 3 — Título</label>
+          <input id="rec3_titulo" type="text" placeholder="Ej: Problemas extra" />
+        </div>
+        <div class="field">
+          <label for="rec3_link">Recurso 3 — Link</label>
+          <input id="rec3_link" type="url" placeholder="https://..." />
+        </div>
+      </div>
+      <div class="field">
+        <label for="rec3_desc">Recurso 3 — Descripción</label>
+        <textarea id="rec3_desc" rows="2" placeholder="Ej: Lista de ejercicios..."></textarea>
       </div>
     </section>
 
@@ -131,7 +186,7 @@
       </div>
 
       <textarea id="codigo" spellcheck="false"></textarea>
-      <p class="help">El bloque generado no incluye embed del video; solo botón/enlace. Minutos clave soportan LaTeX con MathJax.</p>
+      <p class="help">Minutos clave soportan LaTeX con MathJax.</p>
     </section>
   </main>
 
