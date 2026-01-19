@@ -173,7 +173,7 @@ function cardTranscripcionSiempre({ href }) {
   if (!link) {
     return `<div
       style="background-color: #f4f7ff; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 8px 8px 18px #c9d3e4, -8px -8px 18px #ffffff;">
-      <div style="font-size: 40px; margin-bottom: 10px;">📄</div>
+      <div style="font-size: 40px; margin-bottom: 10px;"></div>
       <h4 style="margin: 0; color: #003366;">Transcripción</h4>
       <p style="font-size: 0.95em; color: #555; margin-top: 5px;">Archivo PDF con la transcripción completa del video.</p>
       <div style="display: inline-block; margin-top: 12px; padding: 10px 18px; background-color: rgba(0,86,179,.18); color: #003366; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.95em;">
@@ -184,7 +184,6 @@ function cardTranscripcionSiempre({ href }) {
 
   return cardExacta({
     emoji: "📄",
-    titulo: "Transcripción",
     desc: "Archivo PDF con la transcripción completa del video.",
     href: link,
     colorBoton: "#0056b3",
