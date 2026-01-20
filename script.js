@@ -1,131 +1,136 @@
+// script.js
 let minutoCount = 0;
 
 const el = {
-  titulo: document.getElementById("titulo_bloque"),
-  intro: document.getElementById("intro"),
-  video: document.getElementById("link_video"),
+    titulo: document.getElementById("titulo_bloque"),
+    intro: document.getElementById("intro"),
+    video: document.getElementById("link_video"),
+    pdfTrans: document.getElementById("pdf_trans"),
 
-  pdfTrans: document.getElementById("pdf_trans"),
+    // NOTAS (opcional)
+    notasTitulo: document.getElementById("notas_titulo"),
+    notasLink: document.getElementById("notas_link"),
+    notasDesc: document.getElementById("notas_desc"),
 
-  // NOTAS (opcional)
-  notasTitulo: document.getElementById("notas_titulo"),
-  notasLink: document.getElementById("notas_link"),
-  notasDesc: document.getElementById("notas_desc"),
+    // RECURSOS EXTRA (máx. 3)
+    r1Titulo: document.getElementById("rec1_titulo"),
+    r1Link: document.getElementById("rec1_link"),
+    r1Desc: document.getElementById("rec1_desc"),
 
-  // RECURSOS EXTRA (máx. 3)
-  r1Titulo: document.getElementById("r1_titulo"),
-  r1Link: document.getElementById("r1_link"),
-  r2Titulo: document.getElementById("r2_titulo"),
-  r2Link: document.getElementById("r2_link"),
-  r3Titulo: document.getElementById("r3_titulo"),
-  r3Link: document.getElementById("r3_link"),
+    r2Titulo: document.getElementById("rec2_titulo"),
+    r2Link: document.getElementById("rec2_link"),
+    r2Desc: document.getElementById("rec2_desc"),
 
-  // ACTIVIDAD (calificable)
-  linkAct: document.getElementById("link_actividad"),
-  txtBoton: document.getElementById("texto_boton"),
-  txtFinal: document.getElementById("texto_bloque_final"),
-  txtTitFinal: document.getElementById("texto_titulo_final"),
-  emojiFinal: document.getElementById("emoji_final"),
+    r3Titulo: document.getElementById("rec3_titulo"),
+    r3Link: document.getElementById("rec3_link"),
+    r3Desc: document.getElementById("rec3_desc"),
 
-  minutosCont: document.getElementById("minutos-container"),
+    // ACTIVIDAD (calificable)
+    linkAct: document.getElementById("link_actividad"),
+    txtBoton: document.getElementById("texto_boton"),
+    txtFinal: document.getElementById("texto_bloque_final"),
+    txtTitFinal: document.getElementById("texto_titulo_final"),
+    emojiFinal: document.getElementById("emoji_final"),
 
-  btnAddMin: document.getElementById("btnAddMin"),
-  btnGenerar: document.getElementById("btnGenerar"),
-  btnCopiar: document.getElementById("btnCopiar"),
+    minutosCont: document.getElementById("minutos-container"),
 
-  resultado: document.getElementById("resultado"),
-  codigo: document.getElementById("codigo"),
+    btnAddMin: document.getElementById("btnAddMin"),
+    btnGenerar: document.getElementById("btnGenerar"),
+    btnCopiar: document.getElementById("btnCopiar"),
+
+    resultado: document.getElementById("resultado"),
+    codigo: document.getElementById("codigo"),
 };
 
 function escapeHTML(s) {
-  return String(s ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
 
 function cleanURL(u) {
-  const v = String(u ?? "").trim();
-  return v || "";
+    const v = String(u ?? "").trim();
+    return v || "";
 }
 
 function ytEmbed(url) {
-  const u = cleanURL(url);
-  if (!u) return "";
+    const u = cleanURL(url);
+    if (!u) return "";
 
-  if (u.includes("watch?v=")) {
-    const id = u.split("watch?v=")[1].split("&")[0];
-    return `https://www.youtube.com/embed/${id}`;
-  }
-  if (u.includes("youtu.be/")) {
-    const id = u.split("youtu.be/")[1].split("?")[0];
-    return `https://www.youtube.com/embed/${id}`;
-  }
-  if (u.includes("/embed/")) {
-    const id = u.split("/embed/")[1].split(/[?&]/)[0];
-    return `https://www.youtube.com/embed/${id}`;
-  }
-  return u;
+    if (u.includes("watch?v=")) {
+        const id = u.split("watch?v=")[1].split("&")[0];
+        return `https://www.youtube.com/embed/${id}`;
+    }
+    if (u.includes("youtu.be/")) {
+        const id = u.split("youtu.be/")[1].split("?")[0];
+        return `https://www.youtube.com/embed/${id}`;
+    }
+    if (u.includes("/embed/")) {
+        const id = u.split("/embed/")[1].split(/[?&]/)[0];
+        return `https://www.youtube.com/embed/${id}`;
+    }
+    return u;
 }
 
 function embedStartLink(embedUrl, seconds) {
-  const e = cleanURL(embedUrl);
-  if (!e) return "";
-  const s = Math.max(0, Number(seconds) || 0);
-  return `${e}?start=${s}`;
+    const e = cleanURL(embedUrl);
+    if (!e) return "";
+    const s = Math.max(0, Number(seconds) || 0);
+    return `${e}?start=${s}`;
 }
 
 function formatMin(m) {
-  const s = String(m ?? "").trim();
-  if (!s) return "";
-  if (!s.includes(":")) return String(s).padStart(2, "0") + ":00";
+    const s = String(m ?? "").trim();
+    if (!s) return "";
+    if (!s.includes(":")) return String(s).padStart(2, "0") + ":00";
 
-  let [mm, ss] = s.split(":");
-  mm = (mm || "0").trim();
-  ss = (ss || "0").trim();
-  return String(mm).padStart(2, "0") + ":" + String(ss).padStart(2, "0");
+    let [mm, ss] = s.split(":");
+    mm = (mm || "0").trim();
+    ss = (ss || "0").trim();
+    return String(mm).padStart(2, "0") + ":" + String(ss).padStart(2, "0");
 }
 
 function toSeconds(m) {
-  const s = String(m ?? "").trim();
-  if (!s) return 0;
+    const s = String(m ?? "").trim();
+    if (!s) return 0;
 
-  if (!s.includes(":")) {
-    const mm = parseInt(s, 10);
-    return Number.isFinite(mm) ? mm * 60 : 0;
-  }
+    if (!s.includes(":")) {
+        const mm = parseInt(s, 10);
+        return Number.isFinite(mm) ? mm * 60 : 0;
+    }
 
-  let [mm, ss] = s.split(":");
-  mm = parseInt(mm, 10);
-  ss = parseInt(ss, 10);
+    let [mm, ss] = s.split(":");
+    mm = parseInt(mm, 10);
+    ss = parseInt(ss, 10);
 
-  mm = Number.isFinite(mm) ? mm : 0;
-  ss = Number.isFinite(ss) ? ss : 0;
-  return mm * 60 + ss;
+    mm = Number.isFinite(mm) ? mm : 0;
+    ss = Number.isFinite(ss) ? ss : 0;
+    return mm * 60 + ss;
 }
 
 function toast(msg, ok = true) {
-  const t = document.createElement("div");
-  t.className = "toast";
-  t.textContent = msg;
-  if (!ok) t.style.background = "rgba(153, 27, 27, 0.92)";
-  document.body.appendChild(t);
-  requestAnimationFrame(() => t.classList.add("show"));
-  setTimeout(() => {
-    t.classList.remove("show");
-    setTimeout(() => t.remove(), 200);
-  }, 1400);
+    const t = document.createElement("div");
+    t.className = "toast";
+    t.textContent = msg;
+    if (!ok) t.style.background = "rgba(153, 27, 27, 0.92)";
+    document.body.appendChild(t);
+    requestAnimationFrame(() => t.classList.add("show"));
+    setTimeout(() => {
+        t.classList.remove("show");
+        setTimeout(() => t.remove(), 200);
+    }, 1400);
 }
 
 function addMinRow() {
-  minutoCount += 1;
-  const rowId = `row_${minutoCount}`;
+    minutoCount += 1;
+    const rowId = `row_${minutoCount}`;
 
-  el.minutosCont.insertAdjacentHTML(
-    "beforeend",
-    `<div class="min-row" id="${rowId}">
+    el.minutosCont.insertAdjacentHTML(
+        "beforeend",
+        `<div class="min-row" id="${rowId}">
       <div class="field">
         <label>Minuto ${minutoCount} (mm:ss o mm)</label>
         <input type="text" id="m_${minutoCount}" placeholder="Ej: 1:30" />
@@ -137,17 +142,17 @@ function addMinRow() {
       <button class="btn btn-ghost" type="button" aria-label="Eliminar" title="Eliminar"
         onclick="removeMinRow('${rowId}')">🗑️</button>
     </div>`
-  );
+    );
 }
 
 function removeMinRow(rowId) {
-  const node = document.getElementById(rowId);
-  if (node) node.remove();
+    const node = document.getElementById(rowId);
+    if (node) node.remove();
 }
 window.removeMinRow = removeMinRow;
 
 function mathjaxBundle() {
-  return `<script>
+    return `<script>
 window.MathJax=window.MathJax||{tex:{inlineMath:[['\\\\(','\\\\)'],['$','$']],displayMath:[['$$','$$'],['\\\\[','\\\\]']]}};
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
@@ -160,14 +165,14 @@ window.MathJax=window.MathJax||{tex:{inlineMath:[['\\\\(','\\\\)'],['$','$']],di
 }
 
 function cardExacta({ emoji, titulo, desc, href, colorBoton, textoBoton = "Abrir" }) {
-  const link = cleanURL(href);
-  if (!link) return "";
+    const link = cleanURL(href);
+    if (!link) return "";
 
-  const t = escapeHTML(titulo);
-  const d = escapeHTML(desc);
+    const t = escapeHTML(titulo);
+    const d = escapeHTML(desc);
 
-  return `<div
-      style="background-color: #f4f7ff; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 8px 8px 18px #c9d3e4, -8px -8px 18px #ffffff;">
+    return `<div
+      style="background-color: #f4f7ff; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);">
       <div style="font-size: 40px; margin-bottom: 10px;">${emoji}</div>
       <h4 style="margin: 0; color: #003366;">${t}</h4>
       <p style="font-size: 0.95em; color: #555; margin-top: 5px;">${d}</p>
@@ -177,11 +182,11 @@ function cardExacta({ emoji, titulo, desc, href, colorBoton, textoBoton = "Abrir
 }
 
 function cardTranscripcionSiempre({ href }) {
-  const link = cleanURL(href);
+    const link = cleanURL(href);
 
-  if (!link) {
-    return `<div
-      style="background-color: #f4f7ff; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 8px 8px 18px #c9d3e4, -8px -8px 18px #ffffff;">
+    if (!link) {
+        return `<div
+      style="background-color: #f4f7ff; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);">
       <div style="font-size: 40px; margin-bottom: 10px;">📄</div>
       <h4 style="margin: 0; color: #003366;">Transcripción</h4>
       <p style="font-size: 0.95em; color: #555; margin-top: 5px;">Archivo PDF con la transcripción completa del video.</p>
@@ -189,78 +194,118 @@ function cardTranscripcionSiempre({ href }) {
         Enlace no proporcionado
       </div>
     </div>`;
-  }
+    }
 
-  return cardExacta({
-    emoji: "📄",
-    titulo: "Transcripción",
-    desc: "Archivo PDF con la transcripción completa del video.",
-    href: link,
-    colorBoton: "#0056b3",
-    textoBoton: "Descargar",
-  });
+    return cardExacta({
+        emoji: "📄",
+        titulo: "Transcripción",
+        desc: "Archivo PDF con la transcripción completa del video.",
+        href: link,
+        colorBoton: "#0056b3",
+        textoBoton: "Descargar",
+    });
+}
+
+function extrasListHTML(extras) {
+    if (!extras.length) return "";
+
+    // Lista simple dentro del bloque de actividad (sin “tarjetas”)
+    return `
+    <div style="margin-top: 14px; padding: 14px; background: rgba(255,255,255,.55); border-radius: 10px; border: 1px solid rgba(0,0,0,.06);">
+      <h4 style="margin: 0 0 10px; color: #003366;">📎 Recursos extra</h4>
+      <ul style="margin: 0; padding-left: 18px; line-height: 1.7; color: #1f2937;">
+        ${extras
+        .map((r) => {
+            const t = escapeHTML(r.titulo || "Recurso");
+            const d = escapeHTML(r.desc || "");
+            const href = cleanURL(r.link);
+            const descLine = d ? ` <span style="color:#475569;">— ${d}</span>` : "";
+            return `<li><a style="color:#0056b3; font-weight:700; text-decoration:none;" href="${href}" target="_blank" rel="noopener">${t}</a>${descLine}</li>`;
+        })
+        .join("\n")}
+      </ul>
+    </div>
+  `;
 }
 
 function generarHTML() {
-  const titulo = escapeHTML(el.titulo.value);
+    const titulo = escapeHTML(el.titulo.value);
 
-  const introRaw = String(el.intro.value ?? "").trim();
-  const introPars = introRaw
-    ? introRaw
-        .split(/\n\s*\n+/)
-        .map((p) => p.trim())
-        .filter(Boolean)
-    : [];
+    // párrafos: el último va en negritas (sin duplicarlo)
+    const introRaw = String(el.intro.value ?? "").trim();
+    const introPars = introRaw
+        ? introRaw
+            .split(/\n\s*\n+/)
+            .map((p) => p.trim())
+            .filter(Boolean)
+        : [];
 
-  const introHTML = introPars
-    .map((p) => `<p style="font-size: 1.05em; color: #333; line-height: 1.6;">${escapeHTML(p)}</p>`)
-    .join("\n  ");
+    const normalPars = introPars.length > 1 ? introPars.slice(0, -1) : [];
+    const lastPar = introPars.length ? introPars[introPars.length - 1] : "";
 
-  const invitacionStrong = introPars.length
-    ? `<p><strong>${escapeHTML(introPars[introPars.length - 1])}</strong></p>`
-    : "";
+    const introHTML = [
+        ...normalPars.map(
+            (p) => `<p style="font-size: 1.05em; color: #333; line-height: 1.6;">${escapeHTML(p)}</p>`
+        ),
+        ...(lastPar
+            ? [`<p style="font-size: 1.05em; color: #333; line-height: 1.6;"><strong>${escapeHTML(lastPar)}</strong></p>`]
+            : []),
+    ].join("\n  ");
 
-  const linkEmbed = ytEmbed(el.video.value);
+    const linkEmbed = ytEmbed(el.video.value);
 
-  const rows = Array.from(document.querySelectorAll(".min-row"));
-  const minutes = [];
-  for (const row of rows) {
-    const mInput = row.querySelector('input[id^="m_"]');
-    const tInput = row.querySelector('input[id^="t_"]');
-    const mRaw = (mInput?.value || "").trim();
-    if (!mRaw) continue;
+    // minutos
+    const rows = Array.from(document.querySelectorAll(".min-row"));
+    const minutes = [];
+    for (const row of rows) {
+        const mInput = row.querySelector('input[id^="m_"]');
+        const tInput = row.querySelector('input[id^="t_"]');
+        const mRaw = (mInput?.value || "").trim();
+        if (!mRaw) continue;
 
-    const sec = toSeconds(mRaw);
-    const mmss = formatMin(mRaw);
-    const texto = escapeHTML((tInput?.value || "").trim());
-    minutes.push({ sec, mmss, texto });
-  }
-  minutes.sort((a, b) => a.sec - b.sec);
+        const sec = toSeconds(mRaw);
+        const mmss = formatMin(mRaw);
+        const texto = escapeHTML((tInput?.value || "").trim());
+        minutes.push({ sec, mmss, texto });
+    }
+    minutes.sort((a, b) => a.sec - b.sec);
 
-  const transLink = cleanURL(el.pdfTrans.value);
+    const transLink = cleanURL(el.pdfTrans.value);
 
-  // NOTAS (opcional)
-  const notasLink = cleanURL(el.notasLink.value);
-  const notasTitle = String(el.notasTitulo.value || "").trim();
-  const notasDesc = String(el.notasDesc.value || "").trim();
+    // notas
+    const notasLink = cleanURL(el.notasLink.value);
+    const notasTitle = String(el.notasTitulo.value || "").trim();
+    const notasDesc = String(el.notasDesc.value || "").trim();
 
-  // RECURSOS EXTRA (máx. 3, no calificables)
-  const extras = [
-    { titulo: String(el.r1Titulo.value || "").trim(), link: cleanURL(el.r1Link.value) },
-    { titulo: String(el.r2Titulo.value || "").trim(), link: cleanURL(el.r2Link.value) },
-    { titulo: String(el.r3Titulo.value || "").trim(), link: cleanURL(el.r3Link.value) },
-  ].filter((r) => r.link);
+    // recursos extra (se mostrarán SOLO dentro del bloque de actividad)
+    const extras = [
+        {
+            titulo: String(el.r1Titulo.value || "").trim(),
+            link: cleanURL(el.r1Link.value),
+            desc: String(el.r1Desc.value || "").trim(),
+        },
+        {
+            titulo: String(el.r2Titulo.value || "").trim(),
+            link: cleanURL(el.r2Link.value),
+            desc: String(el.r2Desc.value || "").trim(),
+        },
+        {
+            titulo: String(el.r3Titulo.value || "").trim(),
+            link: cleanURL(el.r3Link.value),
+            desc: String(el.r3Desc.value || "").trim(),
+        },
+    ].filter((r) => r.link);
 
-  // ACTIVIDAD
-  const linkAct = cleanURL(el.linkAct.value);
-  const txtBoton = escapeHTML(el.txtBoton.value || "🔗 Ir a la actividad");
-  const txtFinal = escapeHTML(el.txtFinal.value || "");
-  const txtTitFinal = escapeHTML(el.txtTitFinal.value || "Actividad");
-  const emojiFinal = escapeHTML(el.emojiFinal.value || "📝");
+    // actividad
+    const linkAct = cleanURL(el.linkAct.value);
+    const txtBoton = escapeHTML(el.txtBoton.value || "🔗 Ir a la actividad");
+    const txtFinal = escapeHTML(el.txtFinal.value || "");
+    const txtTitFinal = escapeHTML(el.txtTitFinal.value || "Actividad");
+    const emojiFinal = escapeHTML(el.emojiFinal.value || "📝");
 
-  const videoBlock = linkEmbed
-    ? `<!-- CONTENEDOR DEL VIDEO (16:9) -->
-  <div style="margin-top: 25px; border-radius: 16px; background-color: #e9f4ff; padding: 15px; text-align: center; box-shadow: 8px 8px 20px #cbd5e1, -8px -8px 20px #ffffff;">
+    const videoBlock = linkEmbed
+        ? `<!-- CONTENEDOR DEL VIDEO (16:9) -->
+  <div style="margin-top: 25px; border-radius: 16px; background-color: #e9f4ff; padding: 15px; text-align: center; box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);">
     <div style="position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; box-shadow: inset 4px 4px 8px #cbd5e1, inset -4px -4px 8px #ffffff;">
       <iframe
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
@@ -270,80 +315,72 @@ function generarHTML() {
         allowfullscreen="allowfullscreen"></iframe>
     </div>
   </div>`
-    : "";
+        : "";
 
-  const minutosBlock = minutes.length && linkEmbed
-    ? `<!-- MINUTOS CLAVE -->
-  <details style="margin-top: 30px; border-radius: 10px; background-color: #f5f8ff; padding: 18px; box-shadow: 8px 8px 16px #cdd6e3, -8px -8px 16px #ffffff;">
-    <summary style="cursor: pointer; font-weight: bold; color: #004a99; font-size: 1.1em;">📝 Mostrar minutos importantes</summary>
+    const minutosBlock =
+        minutes.length && linkEmbed
+            ? `<!-- MINUTOS CLAVE -->
+  <details style="margin-top: 30px; border-radius: 10px; background-color: #f5f8ff; padding: 18px; box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);">
+    <summary style="cursor: pointer; font-weight: bold; color: #004a99; font-size: 1.1em;">🕐 Mostrar minutos importantes</summary>
     <div style="margin-top: 15px; font-size: 1.05em; color: #333;">
       <p>Accede rápidamente a los momentos clave del video:</p>
       <ul style="list-style-type: none; padding-left: 10px; line-height: 1.8;">
         ${minutes
-          .map((it) => {
-            const href = embedStartLink(linkEmbed, it.sec);
-            return `<li>🔹 <strong>Minuto <a style="color: #0056b3; text-decoration: none; font-weight: bold;" href="${href}" target="_blank" rel="noopener">${it.mmss}</a>:</strong> ${it.texto}</li>`;
-          })
-          .join("\n        ")}
+                .map((it) => {
+                    const href = embedStartLink(linkEmbed, it.sec);
+                    return `<li>🔹 <strong>Minuto <a style="color: #0056b3; text-decoration: none; font-weight: bold;" href="${href}" target="_blank" rel="noopener">${it.mmss}</a>:</strong> ${it.texto}</li>`;
+                })
+                .join("\n        ")}
       </ul>
     </div>
   </details>`
-    : "";
+            : "";
 
-  // TARJETAS: Transcripción (siempre) + Notas (opcional) + Recursos extra (opcional)
-  const cardTrans = cardTranscripcionSiempre({ href: transLink });
+    // tarjetas: SOLO transcripción + notas
+    const cardTrans = cardTranscripcionSiempre({ href: transLink });
 
-  const cardNotas = notasLink
-    ? cardExacta({
-        emoji: "📝",
-        titulo: notasTitle || "Notas",
-        desc: notasDesc || "Material de apoyo del video.",
-        href: notasLink,
-        colorBoton: "#2a6cd6",
-        textoBoton: "Descargar",
-      })
-    : "";
+    const cardNotas = notasLink
+        ? cardExacta({
+            emoji: "📕",
+            titulo: notasTitle || "Notas",
+            desc: notasDesc || "Material de apoyo del video.",
+            href: notasLink,
+            colorBoton: "#2a6cd6",
+            textoBoton: "Descargar",
+        })
+        : "";
 
-  const cardsExtras = extras.map((r, idx) =>
-    cardExacta({
-      emoji: "📎",
-      titulo: r.titulo || `Recurso ${idx + 1}`,
-      desc: "Enlace a material complementario (no calificable).",
-      href: r.link,
-      colorBoton: "#3b82f6",
-      textoBoton: "Abrir",
-    })
-  );
+    const tarjetas = [cardTrans, cardNotas].filter(Boolean);
 
-  const tarjetas = [cardTrans, cardNotas, ...cardsExtras].filter(Boolean);
-
-  const tarjetasBlock =
-    tarjetas.length > 0
-      ? `<!-- TARJETAS -->
+    const tarjetasBlock =
+        tarjetas.length > 0
+            ? `<!-- TARJETAS -->
   <div style="margin-top: 30px; display: grid; grid-template-columns: ${tarjetas.length === 1 ? "1fr" : "1fr 1fr"}; gap: 25px;">
     ${tarjetas.join("\n    ")}
   </div>`
-      : "";
+            : "";
 
-  // ACTIVIDAD (calificable) como bloque destacado
-  const bloqueActividad = linkAct
-    ? `<!-- ACTIVIDAD -->
+    // recursos extra solo dentro del bloque de actividad
+    const extrasInsideActividad = linkAct ? extrasListHTML(extras) : "";
+
+    const bloqueActividad = linkAct
+        ? `<!-- ACTIVIDAD -->
   <div style="background-color: #cfe2ff; padding: 20px; border-radius: 10px; margin-top: 30px; border-left: 6px solid #0056b3;">
     <h3 style="color: #003366; margin-bottom: 10px;">${emojiFinal} ${txtTitFinal}</h3>
     <p style="font-size: 1.05em; color: #333; line-height: 1.6;">${txtFinal}</p>
-  </div>
-  <div style="text-align: center; margin-top: 20px;">
+    <div style="text-align: center; margin-top: 20px;">
     <a style="display: inline-block; padding: 12px 25px; background-color: #0056b3; color: white; text-decoration: none; font-weight: bold; border-radius: 8px; box-shadow: 0 3px 6px rgba(0,0,0,0.2); transition: 0.3s;"
       href="${linkAct}" target="_blank" rel="noopener">${txtBoton}</a>
+      </div>
+    ${extrasInsideActividad}
   </div>`
-    : "";
+        : "";
 
-  const outputHTML = `<!-- CONTENEDOR PRINCIPAL -->
+    const outputHTML = `<!-- CONTENEDOR PRINCIPAL -->
 <div lang="es-mx"
   style="font-family: Montserrat, sans-serif; background-color: #e2eaf7; padding: 35px; margin: 25px auto; width: 90%; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: justify; position: relative;">
   <h2 style="color: #003366; text-align: center; font-weight: bold; margin-bottom: 15px;">${titulo}</h2>
   ${introHTML}
-  ${invitacionStrong}
   ${videoBlock}
   ${minutosBlock}
   ${tarjetasBlock}
@@ -351,22 +388,22 @@ function generarHTML() {
 </div>
 ${mathjaxBundle()}`;
 
-  el.codigo.value = outputHTML;
-  el.resultado.style.display = "block";
-  el.resultado.scrollIntoView({ behavior: "smooth", block: "start" });
+    el.codigo.value = outputHTML;
+    el.resultado.style.display = "block";
+    el.resultado.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function copiar() {
-  const text = el.codigo.value;
-  navigator.clipboard
-    .writeText(text)
-    .then(() => toast("Código copiado ✔", true))
-    .catch(() => toast("No se pudo copiar (permiso del navegador).", false));
+    const text = el.codigo.value;
+    navigator.clipboard
+        .writeText(text)
+        .then(() => toast("Código copiado ✔", true))
+        .catch(() => toast("No se pudo copiar (permiso del navegador).", false));
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  el.btnAddMin.addEventListener("click", addMinRow);
-  el.btnGenerar.addEventListener("click", generarHTML);
-  el.btnCopiar.addEventListener("click", copiar);
-  addMinRow();
+    el.btnAddMin.addEventListener("click", addMinRow);
+    el.btnGenerar.addEventListener("click", generarHTML);
+    el.btnCopiar.addEventListener("click", copiar);
+    addMinRow();
 });
