@@ -7,10 +7,20 @@ const el = {
 
   pdfTrans: document.getElementById("pdf_trans"),
 
-  profTitulo: document.getElementById("prof_titulo"),
-  profLink: document.getElementById("prof_link"),
-  profDesc: document.getElementById("prof_desc"),
+  // NOTAS (opcional)
+  notasTitulo: document.getElementById("notas_titulo"),
+  notasLink: document.getElementById("notas_link"),
+  notasDesc: document.getElementById("notas_desc"),
 
+  // RECURSOS EXTRA (máx. 3)
+  r1Titulo: document.getElementById("r1_titulo"),
+  r1Link: document.getElementById("r1_link"),
+  r2Titulo: document.getElementById("r2_titulo"),
+  r2Link: document.getElementById("r2_link"),
+  r3Titulo: document.getElementById("r3_titulo"),
+  r3Link: document.getElementById("r3_link"),
+
+  // ACTIVIDAD (calificable)
   linkAct: document.getElementById("link_actividad"),
   txtBoton: document.getElementById("texto_boton"),
   txtFinal: document.getElementById("texto_bloque_final"),
@@ -149,8 +159,7 @@ window.MathJax=window.MathJax||{tex:{inlineMath:[['\\\\(','\\\\)'],['$','$']],di
 </script>`;
 }
 
-/** Tarjeta EXACTA del estilo que pegaste (Transcripción / Notas / Recurso) */
-function cardExacta({ emoji, titulo, desc, href, colorBoton, textoBoton = "Descargar" }) {
+function cardExacta({ emoji, titulo, desc, href, colorBoton, textoBoton = "Abrir" }) {
   const link = cleanURL(href);
   if (!link) return "";
 
@@ -163,7 +172,7 @@ function cardExacta({ emoji, titulo, desc, href, colorBoton, textoBoton = "Desca
       <h4 style="margin: 0; color: #003366;">${t}</h4>
       <p style="font-size: 0.95em; color: #555; margin-top: 5px;">${d}</p>
       <a style="display: inline-block; margin-top: 12px; padding: 10px 18px; background-color: ${colorBoton}; color: white; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.95em;"
-        href="${link}" target="_blank" rel="noopener"> ${escapeHTML(textoBoton)} </a>
+        href="${link}" target="_blank" rel="noopener">${escapeHTML(textoBoton)}</a>
     </div>`;
 }
 
@@ -171,21 +180,17 @@ function cardTranscripcionSiempre({ href }) {
   const link = cleanURL(href);
 
   if (!link) {
-    // ✅ Ajuste: aquí solo mostramos UNA vez “Transcripción” (en el título),
-    // y el icono se mantiene (no vuelve a repetirse en otro lugar).
     return `<div
       style="background-color: #f4f7ff; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 8px 8px 18px #c9d3e4, -8px -8px 18px #ffffff;">
       <div style="font-size: 40px; margin-bottom: 10px;">📄</div>
       <h4 style="margin: 0; color: #003366;">Transcripción</h4>
       <p style="font-size: 0.95em; color: #555; margin-top: 5px;">Archivo PDF con la transcripción completa del video.</p>
-      <div style="display: inline-block; margin-top: 12px; padding: 10px 18px; background-color: rgba(0,86,179,.18); color: #003366; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.95em;">
+      <div style="display: inline-block; margin-top: 12px; padding: 10px 18px; background-color: rgba(0,86,179,.18); color: #003366; border-radius: 8px; font-weight: bold; font-size: 0.95em;">
         Enlace no proporcionado
       </div>
     </div>`;
   }
 
-  // ✅ Ajuste clave: faltaba "titulo" en el caso con link, por eso se duplicaba raro
-  // (por ejemplo si el HTML/preview intentaba “rellenar” y se veía dos veces).
   return cardExacta({
     emoji: "📄",
     titulo: "Transcripción",
@@ -208,10 +213,7 @@ function generarHTML() {
     : [];
 
   const introHTML = introPars
-    .map(
-      (p) =>
-        `<p style="font-size: 1.05em; color: #333; line-height: 1.6;">${escapeHTML(p)}</p>`
-    )
+    .map((p) => `<p style="font-size: 1.05em; color: #333; line-height: 1.6;">${escapeHTML(p)}</p>`)
     .join("\n  ");
 
   const invitacionStrong = introPars.length
@@ -237,49 +239,50 @@ function generarHTML() {
 
   const transLink = cleanURL(el.pdfTrans.value);
 
-  const profLink = cleanURL(el.profLink.value);
-  const profTitle = String(el.profTitulo.value || "").trim();
-  const profDesc = String(el.profDesc.value || "").trim();
+  // NOTAS (opcional)
+  const notasLink = cleanURL(el.notasLink.value);
+  const notasTitle = String(el.notasTitulo.value || "").trim();
+  const notasDesc = String(el.notasDesc.value || "").trim();
 
+  // RECURSOS EXTRA (máx. 3, no calificables)
+  const extras = [
+    { titulo: String(el.r1Titulo.value || "").trim(), link: cleanURL(el.r1Link.value) },
+    { titulo: String(el.r2Titulo.value || "").trim(), link: cleanURL(el.r2Link.value) },
+    { titulo: String(el.r3Titulo.value || "").trim(), link: cleanURL(el.r3Link.value) },
+  ].filter((r) => r.link);
+
+  // ACTIVIDAD
   const linkAct = cleanURL(el.linkAct.value);
   const txtBoton = escapeHTML(el.txtBoton.value || "🔗 Ir a la actividad");
   const txtFinal = escapeHTML(el.txtFinal.value || "");
-  const txtTitFinal = escapeHTML(el.txtTitFinal.value || "🚀 Continúa con la siguiente actividad");
-  const emojiFinal = escapeHTML(el.emojiFinal.value || "🚀");
+  const txtTitFinal = escapeHTML(el.txtTitFinal.value || "Actividad");
+  const emojiFinal = escapeHTML(el.emojiFinal.value || "📝");
 
   const videoBlock = linkEmbed
-    ? `<!-- CONTENEDOR DEL VIDEO (CORREGIDO 16:9) -->
-  <div
-    style="margin-top: 25px; border-radius: 16px; background-color: #e9f4ff; padding: 15px; text-align: center; box-shadow: 8px 8px 20px #cbd5e1, -8px -8px 20px #ffffff;">
-    <div
-      style="position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; box-shadow: inset 4px 4px 8px #cbd5e1,                         inset -4px -4px 8px #ffffff;">
+    ? `<!-- CONTENEDOR DEL VIDEO (16:9) -->
+  <div style="margin-top: 25px; border-radius: 16px; background-color: #e9f4ff; padding: 15px; text-align: center; box-shadow: 8px 8px 20px #cbd5e1, -8px -8px 20px #ffffff;">
+    <div style="position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; box-shadow: inset 4px 4px 8px #cbd5e1, inset -4px -4px 8px #ffffff;">
       <iframe
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
         title="${titulo}"
         src="${linkEmbed}"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen="allowfullscreen">
-      </iframe></div>
+        allowfullscreen="allowfullscreen"></iframe>
+    </div>
   </div>`
     : "";
 
   const minutosBlock = minutes.length && linkEmbed
-    ? `<!-- SECCIÓN COLAPSABLE -->
-  <details
-    style="margin-top: 30px; border-radius: 10px; background-color: #f5f8ff; padding: 18px; box-shadow: 8px 8px 16px #cdd6e3,           -8px -8px 16px #ffffff;">
-    <summary
-      style="cursor: pointer; font-weight: bold; color: #004a99; font-size: 1.1em;">
-      📝 Mostrar minutos importantes</summary>
+    ? `<!-- MINUTOS CLAVE -->
+  <details style="margin-top: 30px; border-radius: 10px; background-color: #f5f8ff; padding: 18px; box-shadow: 8px 8px 16px #cdd6e3, -8px -8px 16px #ffffff;">
+    <summary style="cursor: pointer; font-weight: bold; color: #004a99; font-size: 1.1em;">📝 Mostrar minutos importantes</summary>
     <div style="margin-top: 15px; font-size: 1.05em; color: #333;">
       <p>Accede rápidamente a los momentos clave del video:</p>
       <ul style="list-style-type: none; padding-left: 10px; line-height: 1.8;">
         ${minutes
           .map((it) => {
             const href = embedStartLink(linkEmbed, it.sec);
-            return `<li>🔹 <strong>Minuto <a
-              style="color: #0056b3; text-decoration: none; font-weight: bold;"
-              href="${href}"
-              target="_blank" rel="noopener">${it.mmss}</a>:</strong> ${it.texto}</li>`;
+            return `<li>🔹 <strong>Minuto <a style="color: #0056b3; text-decoration: none; font-weight: bold;" href="${href}" target="_blank" rel="noopener">${it.mmss}</a>:</strong> ${it.texto}</li>`;
           })
           .join("\n        ")}
       </ul>
@@ -287,59 +290,64 @@ function generarHTML() {
   </details>`
     : "";
 
+  // TARJETAS: Transcripción (siempre) + Notas (opcional) + Recursos extra (opcional)
   const cardTrans = cardTranscripcionSiempre({ href: transLink });
 
-  const profEmoji = /nota/i.test(profTitle) ? "📝" : "📝";
-  const cardProf = profLink
+  const cardNotas = notasLink
     ? cardExacta({
-        emoji: profEmoji,
-        titulo: profTitle || "Notas del video",
-        desc: profDesc || "Resumen y puntos clave del video.",
-        href: profLink,
+        emoji: "📝",
+        titulo: notasTitle || "Notas",
+        desc: notasDesc || "Material de apoyo del video.",
+        href: notasLink,
         colorBoton: "#2a6cd6",
         textoBoton: "Descargar",
       })
     : "";
 
-  const tarjetas = [cardTrans, cardProf].filter(Boolean);
+  const cardsExtras = extras.map((r, idx) =>
+    cardExacta({
+      emoji: "📎",
+      titulo: r.titulo || `Recurso ${idx + 1}`,
+      desc: "Enlace a material complementario (no calificable).",
+      href: r.link,
+      colorBoton: "#3b82f6",
+      textoBoton: "Abrir",
+    })
+  );
+
+  const tarjetas = [cardTrans, cardNotas, ...cardsExtras].filter(Boolean);
+
   const tarjetasBlock =
     tarjetas.length > 0
       ? `<!-- TARJETAS -->
-  <div
-    style="margin-top: 30px; display: grid; grid-template-columns: ${tarjetas.length === 1 ? "1fr" : "1fr 1fr"}; gap: 25px;">
+  <div style="margin-top: 30px; display: grid; grid-template-columns: ${tarjetas.length === 1 ? "1fr" : "1fr 1fr"}; gap: 25px;">
     ${tarjetas.join("\n    ")}
   </div>`
       : "";
 
-  const bloqueFinal =
-    linkAct
-      ? `<!-- BLOQUE FINAL -->
-  <div
-    style="background-color: #cfe2ff; padding: 20px; border-radius: 10px; margin-top: 30px; border-left: 6px solid #0056b3;">
+  // ACTIVIDAD (calificable) como bloque destacado
+  const bloqueActividad = linkAct
+    ? `<!-- ACTIVIDAD -->
+  <div style="background-color: #cfe2ff; padding: 20px; border-radius: 10px; margin-top: 30px; border-left: 6px solid #0056b3;">
     <h3 style="color: #003366; margin-bottom: 10px;">${emojiFinal} ${txtTitFinal}</h3>
     <p style="font-size: 1.05em; color: #333; line-height: 1.6;">${txtFinal}</p>
   </div>
-  <!-- BOTÓN -->
-  <div style="text-align: center; margin-top: 20px;"><a
-      style="display: inline-block; padding: 12px 25px; background-color: #0056b3; color: white; text-decoration: none; font-weight: bold; border-radius: 8px; box-shadow: 0 3px 6px rgba(0,0,0,0.2); transition: 0.3s;"
-      href="${linkAct}" target="_blank" rel="noopener"> ${txtBoton} </a></div>`
-      : "";
+  <div style="text-align: center; margin-top: 20px;">
+    <a style="display: inline-block; padding: 12px 25px; background-color: #0056b3; color: white; text-decoration: none; font-weight: bold; border-radius: 8px; box-shadow: 0 3px 6px rgba(0,0,0,0.2); transition: 0.3s;"
+      href="${linkAct}" target="_blank" rel="noopener">${txtBoton}</a>
+  </div>`
+    : "";
 
   const outputHTML = `<!-- CONTENEDOR PRINCIPAL -->
 <div lang="es-mx"
   style="font-family: Montserrat, sans-serif; background-color: #e2eaf7; padding: 35px; margin: 25px auto; width: 90%; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: justify; position: relative;">
-  <!-- TÍTULO DEL BLOQUE -->
-  <h2
-    style="color: #003366; text-align: center; font-weight: bold; margin-bottom: 15px;">
-    ${titulo}</h2>
-  <!-- PÁRRAFO DE INTRODUCCIÓN -->
+  <h2 style="color: #003366; text-align: center; font-weight: bold; margin-bottom: 15px;">${titulo}</h2>
   ${introHTML}
-  <!-- INVITACIÓN -->
   ${invitacionStrong}
   ${videoBlock}
   ${minutosBlock}
   ${tarjetasBlock}
-  ${bloqueFinal}
+  ${bloqueActividad}
 </div>
 ${mathjaxBundle()}`;
 
